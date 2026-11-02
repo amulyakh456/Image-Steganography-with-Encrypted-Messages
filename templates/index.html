@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image Steganography | DSP Project</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <p class="eyebrow">DIGITAL SIGNAL PROCESSING PROJECT</p>
+      <h1>Image Steganography</h1>
+      <p class="subtitle">Hide encrypted messages inside images using AES-GCM and LSB encoding.</p>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}" role="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="step">01</span>
+        <div>
+          <h2>Hide a secret message</h2>
+          <p>Encrypt your message and embed it into a carrier image.</p>
+        </div>
+      </div>
+      <form action="{{ url_for('hide_message') }}" method="post" enctype="multipart/form-data">
+        <label for="message">Secret message</label>
+        <textarea id="message" name="message" rows="4" maxlength="100000"
+                  placeholder="Type the message you want to hide..." required></textarea>
+
+        <label for="password">Encryption password</label>
+        <input id="password" name="password" type="password"
+               placeholder="Enter a strong password" required>
+
+        <label for="image">Choose carrier image</label>
+        <input id="image" name="image" type="file" accept=".png,.jpg,.jpeg,.bmp,image/*" required>
+        <p class="hint">PNG is recommended. The generated stego image is always saved as PNG.</p>
+
+        <button type="submit">Encrypt and hide message</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="step">02</span>
+        <div>
+          <h2>Extract a secret message</h2>
+          <p>Upload a stego image and enter its password to recover the message.</p>
+        </div>
+      </div>
+      <form action="{{ url_for('extract_message') }}" method="post" enctype="multipart/form-data">
+        <label for="stego_image">Stego image</label>
+        <input id="stego_image" name="stego_image" type="file"
+               accept=".png,.jpg,.jpeg,.bmp,image/*" required>
+
+        <label for="extract_password">Decryption password</label>
+        <input id="extract_password" name="extract_password" type="password"
+               placeholder="Enter the original password" required>
+
+        <button class="secondary" type="submit">Extract and decrypt message</button>
+      </form>
+    </section>
+
+    <footer>
+      <p>DSP Project · AES-256-GCM · LSB Image Steganography</p>
+      <p class="hint">Do not edit, resize, or recompress a stego image before extraction.</p>
+    </footer>
+  </main>
+</body>
+</html>

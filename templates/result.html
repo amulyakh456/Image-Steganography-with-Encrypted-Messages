@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Result | Image Steganography</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header class="hero compact">
+      <p class="eyebrow">DSP PROJECT RESULT</p>
+      {% if mode == "hide" %}
+        <h1>Message hidden successfully</h1>
+        <p class="subtitle">Your encrypted payload has been embedded in the image.</p>
+      {% else %}
+        <h1>Message extracted successfully</h1>
+        <p class="subtitle">The payload was authenticated and decrypted.</p>
+      {% endif %}
+    </header>
+
+    {% if mode == "hide" %}
+      <section class="card">
+        <h2>Original vs stego image</h2>
+        <div class="image-comparison">
+          <figure>
+            <img class="preview" src="{{ original_data }}" alt="Original carrier image">
+            <figcaption>Original image</figcaption>
+          </figure>
+          <figure>
+            <img class="preview" src="{{ image_data }}" alt="Generated stego image">
+            <figcaption>Stego image</figcaption>
+          </figure>
+        </div>
+        <a class="button-link" href="{{ download_url }}">Download stego image (PNG)</a>
+      </section>
+
+      <section class="card">
+        <h2>Image quality and payload</h2>
+        <div class="metrics">
+          <div class="metric"><span>MSE</span><strong>{{ mse }}</strong></div>
+          <div class="metric"><span>PSNR</span><strong>{{ psnr }}</strong></div>
+          <div class="metric"><span>Payload</span><strong>{{ payload_size }} bytes</strong></div>
+          <div class="metric"><span>Capacity</span><strong>{{ capacity }} bytes</strong></div>
+        </div>
+        <p class="hint">Lower MSE and higher PSNR generally indicate less visible distortion.</p>
+      </section>
+    {% else %}
+      <section class="card">
+        <h2>Recovered message</h2>
+        <pre class="message-output">{{ message }}</pre>
+        <p class="hint">Authenticated encrypted payload: {{ payload_size }} bytes.</p>
+      </section>
+    {% endif %}
+
+    <a class="back-link" href="{{ url_for('index') }}">← Back to home</a>
+  </main>
+</body>
+</html>
